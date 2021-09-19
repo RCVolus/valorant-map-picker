@@ -1,17 +1,17 @@
 @font-face {
-  font-family: Tungsten;
-  src: url(font/Tungsten-Bold.ttf);
-  font-weight: bold;
+	font-family: Tungsten;
+	src: url(font/Tungsten-Bold.ttf);
+	font-weight: bold;
 }
 @font-face {
-  font-family: D-DIN;
-  src: url(font/D-DIN-Bold.otf);
-  font-weight: bold;
+	font-family: D-DIN;
+	src: url(font/D-DIN-Bold.otf);
+	font-weight: bold;
 }
 @font-face {
-  font-family: D-DIN;
-  src: url(font/D-DIN.otf);
-  font-weight: normal;
+	font-family: D-DIN;
+	src: url(font/D-DIN.otf);
+	font-weight: normal;
 }
 
 * {
@@ -20,7 +20,8 @@
 	box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
 	position: relative;
 	width: 100%;
 	height: 100%;
@@ -33,7 +34,9 @@ body {
 	font-weight: normal;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
 	font-family: Tungsten;
 	font-weight: bold;
 	text-transform: uppercase;
