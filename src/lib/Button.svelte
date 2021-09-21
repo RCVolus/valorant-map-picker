@@ -65,14 +65,6 @@
 		background-color: rgb(15, 25, 35);
 	}
 
-	button.select:hover {
-		color: rgb(15, 25, 35);
-	}
-
-	button.select::before {
-		background-color: rgb(251, 251, 66);
-	}
-
 	button::before {
 		content: '';
 		background-color: rgb(255, 70, 85);

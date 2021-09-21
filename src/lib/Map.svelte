@@ -46,7 +46,7 @@
 >
 	<div class="text">
 		<p>{isBanned ? 'Banned' : isPicked ? `Round ${$picked.indexOf(uuid) + 1}` : ''}</p>
-		<h2>{name}</h2>
+		<h3>{name}</h3>
 	</div>
 	<div class="img-conatiner">
 		<img {src} alt={name} />
@@ -58,8 +58,8 @@
 		display: block;
 		pointer-events: all;
 		cursor: pointer;
-		min-width: 200px;
-		max-width: 300px;
+		min-width: 150px;
+		max-width: 200px;
 		flex-grow: 1;
 		height: auto;
 		background: rgb(118, 128, 121);
@@ -161,7 +161,7 @@
 		color: rgb(251, 251, 66);
 	}
 
-	h2 {
+	h3 {
 		color: rgb(236, 232, 225);
 		line-height: 1;
 	}

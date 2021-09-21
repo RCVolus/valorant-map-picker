@@ -1,5 +1,5 @@
 import sveltePreprocess from 'svelte-preprocess'
-import adapter from '@sveltejs/adapter-node';
+import expressAdapter from "@sveltejs/adapter-node"
 
 export default {
 	// Consult https://github.com/sveltejs/svelte-preprocess for more information about preprocessors
@@ -37,13 +37,14 @@ export default {
 	],
 
 	kit: {
-		adapter: adapter({
+		adapter: expressAdapter({
 			// default options are shown
+			entryPoint: './adapter/index.ts',
 			out: 'build',
 			precompress: false,
 			env: {
-				host: 'localhost',
-				port: '8080'
+				host: 'HOST',
+				port: 'PORT'
 			}
 		})
 	}
