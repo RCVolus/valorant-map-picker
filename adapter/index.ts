@@ -3,19 +3,79 @@ import compression from 'compression';
 import express from 'express';
 import * as http from 'http'
 import { Server } from 'socket.io';
+import joinRoom, { deleteUser, rooms, switchPhase, switchTurn } from './rooms.js';
+import { UserRole } from '../types/User.js';
+
+var __require =
+	/* @__PURE__ */ (x =>
+		typeof require !== 'undefined' ? require :
+		typeof Proxy !== 'undefined' ? new Proxy(x, {
+			get: (a, b) => (typeof require !== 'undefined' ? require : a)[b]
+		}) : x
+	)(function(x) {
+		if (typeof require !== 'undefined') return require.apply(this, arguments)
+		throw new Error('Dynamic require of "' + x + '" is not supported')
+	})
 
 const app = express()
 const port = process.env.PORT || 5000
 
 const server = http.createServer(app)
-const io = new Server(server)
+const io = new Server(server, {
+	pingInterval: 1000,
+	pingTimeout: 2000
+})
 
 io.on('connection', (socket) => {
+	console.log('New Socket connected...')
 
-    console.log('New Socket connected...')
+  socket.on('joinRoom', async ({role, room}) => {
+		socket.join(room)
 
-    //send immediatly a feedback to the incoming connection    
-    socket.send('Hi there, I am a WebSocket server');
+    const user = await joinRoom(socket.id, socket.handshake.address, role, room)
+		socket.emit('user', user)
+		
+		socket.nsp
+			.to(room)
+			.emit('roomState', rooms.get(room))
+
+		if (role !== UserRole.SPECTATOR) {
+			switchPhase(room, socket)
+
+			socket.on('ban', (ban) => {
+				if (rooms.get(room).banns) {
+					rooms.get(room).banns.push(ban)
+				} else {
+					rooms.get(room).banns = [ban]
+				}
+	
+				socket.nsp
+					.to(room)
+					.emit('ban', rooms.get(room).banns)
+	
+				switchTurn(room, socket)
+				switchPhase(room, socket)
+			})
+			socket.on('pick', (pick) => {
+				if (rooms.get(room).picks) {
+					rooms.get(room).picks.push(pick)
+				} else {
+					rooms.get(room).picks = [pick]
+				}
+	
+				socket.nsp
+					.to(room)
+					.emit('pick', rooms.get(room).picks)
+	
+				switchTurn(room, socket)
+				switchPhase(room, socket)
+			})
+		}
+  })
+
+  socket.on('disconnect', e => {
+		deleteUser(socket.id)
+  })
 });
 
 app.use(

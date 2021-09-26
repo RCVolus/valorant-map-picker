@@ -1,5 +1,7 @@
 <script lang="ts">
-	import { selectedMap, banned, picked } from '../store';
+	import { Phase } from '../../types/Room';
+
+	import { selectedMap, banns, picks, phase } from '../store';
 
 	export let src: string;
 	export let name: string;
@@ -14,17 +16,22 @@
 
 	let isBanned = false;
 	$: {
-		isBanned = $banned.includes(uuid);
+		isBanned = $banns.includes(uuid);
 	}
 
 	let isPicked = false;
 	$: {
-		isPicked = $picked.includes(uuid);
+		isPicked = $picks.includes(uuid);
 	}
 
 	let isDisabled = false || disableOverwrite;
 	$: {
-		isDisabled = $banned.includes(uuid) || $picked.includes(uuid) || disableOverwrite;
+		isDisabled = $banns.includes(uuid) || $picks.includes(uuid) || disableOverwrite;
+	}
+
+	let isHidden = false;
+	$: {
+		isHidden = ($banns.includes(uuid) || !$picks.includes(uuid)) && $phase === Phase.SIDE;
 	}
 
 	function selectMap() {
@@ -42,10 +49,11 @@
 	class:selected={isSelectedMap}
 	class:banned={isBanned}
 	class:picked={isPicked}
+	class:hiiden={isHidden}
 	on:click={selectMap}
 >
 	<div class="text">
-		<p>{isBanned ? 'Banned' : isPicked ? `Round ${$picked.indexOf(uuid) + 1}` : ''}</p>
+		<p>{isBanned ? 'Banned' : isPicked ? `Round ${$picks.indexOf(uuid) + 1}` : ''}</p>
 		<h3>{name}</h3>
 	</div>
 	<div class="img-conatiner">
@@ -59,7 +67,7 @@
 		pointer-events: all;
 		cursor: pointer;
 		min-width: 150px;
-		max-width: 200px;
+		/* max-width: 200px; */
 		flex-grow: 1;
 		height: auto;
 		background: rgb(118, 128, 121);
@@ -70,6 +78,10 @@
 
 		&.disabled {
 			pointer-events: none;
+		}
+
+		&.hiiden {
+			display: none;
 		}
 
 		&::before,
@@ -116,6 +128,8 @@
 			object-fit: cover;
 			left: 50%;
 			transform: translateX(-50%);
+			filter: grayscale(0);
+			transition: filter 0.3s ease;
 		}
 
 		&::before {

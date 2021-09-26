@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { selectedMap } from '../store';
+	export let disabled : boolean = false
 </script>
 
 <div class="btn">
-	<button disabled={$selectedMap == undefined} title="Select a map First" on:click>Confirm</button>
+	<button {disabled} title="Select a map First" on:click><slot></slot></button>
 </div>
 
 <style>

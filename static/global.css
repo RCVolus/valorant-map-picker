@@ -36,7 +36,8 @@ body {
 
 h1,
 h2,
-h3 {
+h3,
+h4 {
 	font-family: Tungsten;
 	font-weight: bold;
 	text-transform: uppercase;
@@ -53,4 +54,8 @@ h2 {
 
 h3 {
 	font-size: 3em;
+}
+
+h4 {
+	font-size: 2em;
 }
