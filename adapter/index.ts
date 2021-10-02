@@ -6,17 +6,6 @@ import { Server } from 'socket.io';
 import joinRoom, { deleteUser, rooms, switchPhase, switchTurn } from './rooms.js';
 import { UserRole } from '../types/User.js';
 
-var __require =
-	/* @__PURE__ */ (x =>
-		typeof require !== 'undefined' ? require :
-		typeof Proxy !== 'undefined' ? new Proxy(x, {
-			get: (a, b) => (typeof require !== 'undefined' ? require : a)[b]
-		}) : x
-	)(function(x) {
-		if (typeof require !== 'undefined') return require.apply(this, arguments)
-		throw new Error('Dynamic require of "' + x + '" is not supported')
-	})
-
 const app = express()
 const port = process.env.PORT || 5000
 
