@@ -4,9 +4,10 @@ import expressAdapter from "@sveltejs/adapter-node"
 export default {
 	preprocess: [
 		sveltePreprocess({
+			sourceMap: true,
 			scss: {
 				renderSync: true,
-				outputStyle: 'compressed'
+				outputStyle: 'expanded'
 			}
 		}),
 	],

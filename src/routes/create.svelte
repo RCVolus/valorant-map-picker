@@ -16,8 +16,8 @@
     const code = uuidv4()
 
     spectatorLink = window.location.protocol + "//" + window.location.host + "/spectator/" + code
-    blueLink = window.location.protocol + "//" + window.location.host + "/captain/" + code + "_blue"
-    redLink = window.location.protocol + "//" + window.location.host + "/captain/" + code + "_red"
+    blueLink = window.location.protocol + "//" + window.location.host + "/captain/" + code + "_100"
+    redLink = window.location.protocol + "//" + window.location.host + "/captain/" + code + "_200"
   }
 </script>
 

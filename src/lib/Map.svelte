@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { Phase } from '../../types/Room';
-
+	import { Phase } from '../../types/enums';
 	import { selectedMap, banns, picks, phase } from '../store';
 
 	export let src: string;
@@ -21,17 +20,17 @@
 
 	let isPicked = false;
 	$: {
-		isPicked = $picks.includes(uuid);
+		isPicked = Object.keys($picks).includes(uuid);
 	}
 
 	let isDisabled = false || disableOverwrite;
 	$: {
-		isDisabled = $banns.includes(uuid) || $picks.includes(uuid) || disableOverwrite;
+		isDisabled = $banns.includes(uuid) || Object.keys($picks).includes(uuid) || disableOverwrite;
 	}
 
 	let isHidden = false;
 	$: {
-		isHidden = ($banns.includes(uuid) || !$picks.includes(uuid)) && $phase === Phase.SIDE;
+		isHidden = ($banns.includes(uuid) || !Object.keys($picks).includes(uuid)) && $phase === Phase.SIDE;
 	}
 
 	function selectMap() {
@@ -53,7 +52,7 @@
 	on:click={selectMap}
 >
 	<div class="text">
-		<p>{isBanned ? 'Banned' : isPicked ? `Round ${$picks.indexOf(uuid) + 1}` : ''}</p>
+		<p>{isBanned ? 'Banned' : isPicked ? `Round ${Object.keys($picks).indexOf(uuid) + 1}` : ''}</p>
 		<h3>{name}</h3>
 	</div>
 	<div class="img-conatiner">

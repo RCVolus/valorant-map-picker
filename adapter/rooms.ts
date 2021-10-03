@@ -1,6 +1,7 @@
 import type { Socket } from 'socket.io'
-import { Phase, Room, Turn } from '../types/Room'
-import { User, UserRole } from '../types/User'
+import type { Room } from '../types/Room'
+import type { User } from '../types/User'
+import { Phase, UserRole, Turn } from '../types/enums'
 
 export const rooms : Map<string, Room> = new Map()
 
@@ -13,10 +14,10 @@ export default async function joinRoom (id : string, ip: string, role : UserRole
       ip
     }
     rooms.set(room, {
-      turn: Turn.BLUE,
+      turn: Turn.RED,
       phase: Phase.NONE,
       banns: [],
-      picks: [],
+      picks: {},
       users: [user]
     })
   } else {
@@ -34,7 +35,7 @@ export default async function joinRoom (id : string, ip: string, role : UserRole
 }
 
 export function switchTurn (roomId: string, socket : Socket) {
-  rooms.get(roomId).turn = rooms.get(roomId).turn === Turn.BLUE ? Turn.RED : Turn.BLUE
+  rooms.get(roomId).turn = rooms.get(roomId).turn === Turn.RED ? Turn.BLUE : Turn.RED
 
   socket.nsp
     .to(roomId)
@@ -43,12 +44,18 @@ export function switchTurn (roomId: string, socket : Socket) {
 
 export function switchPhase (roomId: string, socket : Socket) {
   const room = rooms.get(roomId)
+  const bestOf = 3
+  const maps = 7
+  let sidePicks = 0
 
   if (room.phase === Phase.SIDE) {
-
-  } else if (room.phase === Phase.PICK && room.picks?.length >= 3) {
+    sidePicks++
+    if (sidePicks >= bestOf) {
+      rooms.get(roomId).phase = Phase.DONE
+    }
+  } else if (room.phase === Phase.PICK && Object.keys(room.picks).length >= bestOf) {
     rooms.get(roomId).phase = Phase.SIDE
-  } else if (room.phase === Phase.BAN && room.banns?.length >= 3) {
+  } else if (room.phase === Phase.BAN && room.banns.length >= maps - (bestOf + 1)) {
     rooms.get(roomId).phase = Phase.PICK
   } else if (room.phase === Phase.NONE) {
     const blue = room.users.find(u => u.role === UserRole.BLUE)

@@ -7,10 +7,8 @@
 	import { browser } from '$app/env';
 
 	import { banns, picks, phase, turn } from '../../store';
-	import { UserRole } from '../../../types/User';
-	import type { Room } from "$types/Room";
-
-	import { Phase, Turn } from '../../../types/Room';
+	import type { Room, Side } from "../../../types/Room";
+	import { Phase, Turn, UserRole } from '../../../types/enums';
 
 	if (browser) {
 		const socket = io()
@@ -22,7 +20,10 @@
 		socket.on('ban', (newBanns: string[]) => {
 			banns.set(newBanns)
 		})
-		socket.on('pick', (newPicks: string[]) => {
+		socket.on('pick', (newPicks: {[mapId: string]: Side}) => {
+			picks.set(newPicks)
+		})
+		socket.on('side', (newPicks: {[mapId: string]: Side}) => {
 			picks.set(newPicks)
 		})
 		socket.on('turn', (newTurn: Turn) => {
@@ -44,10 +45,12 @@
 <Header>
 	{#if $phase === Phase.NONE}
 		Pleas Wait
+	{:else if $phase === Phase.DONE}
+		Complete
 	{:else if $phase === Phase.SIDE}
-		{`${$turn} is picking a Side`}
+		{`${$turn === 100 ? 'frist Team' : 'Second Tema'} is picking a Side`}
 	{:else}
-		{`${$turn} is ${$phase}ing a Map`}
+		{`${$turn === 100 ? 'frist Team' : 'Second Tema'} is ${$phase}ing a Map`}
 	{/if}
 </Header>
 

@@ -9,12 +9,12 @@
 	import Button from '$lib/Button.svelte';
 
 	import { banns, picks, selectedMap, phase, turn } from '../../store';
-	import type { Room } from "$types/Room";
-	import { User, UserRole } from "../../../types/User";
+	import type { Room, Side } from "../../../types/Room";
+	import type { User } from "../../../types/User";
 	import { goto } from "$app/navigation";
-	import { Phase, Turn } from '../../../types/Room';
+	import { Phase, Turn, UserRole } from '../../../types/enums';
 
-	const team = $page.params.team
+	const team = Number($page.params.team)
 
 	let action : () => void
 
@@ -29,7 +29,10 @@
 		socket.on('ban', (newBanns: string[]) => {
 			banns.set(newBanns)
 		})
-		socket.on('pick', (newPicks: string[]) => {
+		socket.on('pick', (newPicks: {[mapId: string]: Side}) => {
+			picks.set(newPicks)
+		})
+		socket.on('side', (newPicks: {[mapId: string]: Side}) => {
 			picks.set(newPicks)
 		})
 		socket.on('turn', (newTurn: Turn) => {
@@ -62,6 +65,8 @@
 <Header>
 	{#if $phase === Phase.NONE}
 		Pleas Wait
+	{:else if $phase === Phase.DONE}
+		Complete
 	{:else if $phase === Phase.SIDE}
 		{#if $turn !== team}
 			Opponent is picking a Side

@@ -4,7 +4,7 @@ import express from 'express';
 import * as http from 'http'
 import { Server } from 'socket.io';
 import joinRoom, { deleteUser, rooms, switchPhase, switchTurn } from './rooms.js';
-import { UserRole } from '../types/User.js';
+import { UserRole } from '../types/enums';
 
 const app = express()
 const port = process.env.PORT || 5000
@@ -45,16 +45,27 @@ io.on('connection', (socket) => {
 				switchTurn(room, socket)
 				switchPhase(room, socket)
 			})
+			
 			socket.on('pick', (pick) => {
-				if (rooms.get(room).picks) {
-					rooms.get(room).picks.push(pick)
-				} else {
-					rooms.get(room).picks = [pick]
-				}
+				rooms.get(room).picks[pick] = {}
 	
 				socket.nsp
 					.to(room)
 					.emit('pick', rooms.get(room).picks)
+	
+				switchTurn(room, socket)
+				switchPhase(room, socket)
+			})
+
+			socket.on('side', ({map, side, team}) => {
+				if (rooms.get(room).picks) {
+					rooms.get(room).picks[map][side] = team
+					rooms.get(room).picks[map][side === 'attacker' ? 'defender' : 'attacker'] = team === 100 ? 200 : 100
+				}
+	
+				socket.nsp
+					.to(room)
+					.emit('side', rooms.get(room).picks)
 	
 				switchTurn(room, socket)
 				switchPhase(room, socket)
