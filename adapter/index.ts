@@ -16,11 +16,8 @@ const io = new Server(server, {
 })
 
 io.on('connection', (socket) => {
-	console.log('New Socket connected...')
-
   socket.on('joinRoom', async ({role, room}) => {
 		socket.join(room)
-
     const user = await joinRoom(socket.id, socket.handshake.address, role, room)
 		socket.emit('user', user)
 		
@@ -31,22 +28,26 @@ io.on('connection', (socket) => {
 		if (role !== UserRole.SPECTATOR) {
 			switchPhase(room, socket)
 
-			socket.on('ban', (ban) => {
-				if (rooms.get(room).banns) {
-					rooms.get(room).banns.push(ban)
+			socket.on('ban', (ban : string, team : 100 | 200) => {
+				if (rooms.get(room).turn !== team) return
+
+				if (rooms.get(room).bans) {
+					rooms.get(room).bans.push(ban)
 				} else {
-					rooms.get(room).banns = [ban]
+					rooms.get(room).bans = [ban]
 				}
 	
 				socket.nsp
 					.to(room)
-					.emit('ban', rooms.get(room).banns)
+					.emit('ban', rooms.get(room).bans)
 	
 				switchTurn(room, socket)
 				switchPhase(room, socket)
 			})
 			
-			socket.on('pick', (pick) => {
+			socket.on('pick', (pick : string, team : 100 | 200) => {
+				if (rooms.get(room).turn !== team) return
+
 				rooms.get(room).picks[pick] = {}
 	
 				socket.nsp
@@ -57,7 +58,9 @@ io.on('connection', (socket) => {
 				switchPhase(room, socket)
 			})
 
-			socket.on('side', ({map, side, team}) => {
+			socket.on('side', (map, side, team) => {
+				if (rooms.get(room).turn !== team) return
+				
 				if (rooms.get(room).picks) {
 					rooms.get(room).picks[map][side] = team
 					rooms.get(room).picks[map][side === 'attacker' ? 'defender' : 'attacker'] = team === 100 ? 200 : 100

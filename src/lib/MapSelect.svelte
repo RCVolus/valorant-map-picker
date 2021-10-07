@@ -1,29 +1,26 @@
 <script>
+	import { MapStore } from '../store';
 	import Map from './Map.svelte';
+	const {maps, loading, error} = MapStore
 
 	export let disableAll = false;
-
-	async function fetchMaps() {
-		const mapRespons = await fetch('https://valorant-api.com/v1/maps');
-		return mapRespons.json();
-	}
 </script>
 
 <div class="map-select">
-	{#await fetchMaps()}
+	{#if $loading}
 		<h1 style="margin: auto;">Loading ...</h1>
-	{:then maps}
-		{#each maps.data as map}
-			{#if map.uuid !== 'ee613ee9-28b7-4beb-9666-08db13bb2244'}
-				<Map uuid={map.uuid} name={map.displayName} src={map.splash} disabled={disableAll} />
-			{/if}
-		{/each}
-	{:catch error}
+	{:else if $error}
 		<div class="error">
 			<h1>Something went wrong</h1>
 			<p>{error}</p>
 		</div>
-	{/await}
+	{:else}
+		{#each $maps as map}
+			{#if map.uuid !== 'ee613ee9-28b7-4beb-9666-08db13bb2244'}
+				<Map uuid={map.uuid} name={map.displayName} src={map.splash} disabled={disableAll} />
+			{/if}
+		{/each}
+	{/if}
 </div>
 
 <style>

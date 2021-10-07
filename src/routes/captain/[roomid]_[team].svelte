@@ -1,18 +1,17 @@
 <script lang="ts">
 	import { io } from "socket.io-client";
 	import Header from '$lib/Header.svelte';
-
 	import { page } from '$app/stores';
 	import { browser } from '$app/env';
-
 	import MapSelect from '$lib/MapSelect.svelte';
 	import Button from '$lib/Button.svelte';
-
-	import { banns, picks, selectedMap, phase, turn } from '../../store';
+	import { MapStore, phase, selectedSide, turn } from '../../store';
 	import type { Room, Side } from "../../../types/Room";
 	import type { User } from "../../../types/User";
 	import { goto } from "$app/navigation";
 	import { Phase, Turn, UserRole } from '../../../types/enums';
+
+	const { selectedMap, bans, picks } = MapStore;
 
 	const team = Number($page.params.team)
 
@@ -26,8 +25,8 @@
 			room: $page.params.roomid
 		})
 
-		socket.on('ban', (newBanns: string[]) => {
-			banns.set(newBanns)
+		socket.on('ban', (newBans: string[]) => {
+			bans.set(newBans)
 		})
 		socket.on('pick', (newPicks: {[mapId: string]: Side}) => {
 			picks.set(newPicks)
@@ -39,13 +38,14 @@
 			turn.set(newTurn)
 		})
 		socket.on('phase', (newPhase: Phase) => {
+			console.log(newPhase)
 			phase.set(newPhase)
 		})
 		
 		socket.on('roomState', (room: Room) => {
 			phase.set(room.phase)
 			turn.set(room.turn)
-			banns.set(room.banns)
+			bans.set(room.bans)
 			picks.set(room.picks)
 		})
 
@@ -56,8 +56,13 @@
 		})
 
 		action = () => {
-			socket.emit($phase, $selectedMap)
-			selectedMap.set(undefined)
+			if ($selectedMap) {
+				socket.emit($phase, $selectedMap, team)
+				selectedMap.set(undefined)
+			} else if ($selectedSide) {
+				socket.emit($phase, $selectedSide[0], $selectedSide[1], team)
+				selectedSide.set(undefined)
+			}
 		}
 	}
 </script>
@@ -82,5 +87,5 @@
 	{/if}
 </Header>
 
-<MapSelect disableAll={$turn !== team || $phase === Phase.SIDE} />
-<Button on:click={action} disabled={$selectedMap == undefined || $turn !== team} >Confirm</Button>
+<MapSelect disableAll={$turn !== team} />
+<Button on:click={action} disabled={($selectedMap === undefined && $selectedSide === undefined) || $turn !== team} >Confirm</Button>

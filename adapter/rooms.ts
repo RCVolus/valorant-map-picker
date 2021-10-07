@@ -5,23 +5,26 @@ import { Phase, UserRole, Turn } from '../types/enums'
 
 export const rooms : Map<string, Room> = new Map()
 
-export default async function joinRoom (id : string, ip: string, role : UserRole, room : string) {
+export default async function joinRoom (id : string, ip : string, role : UserRole, room : string) {
   let user : User
+  
   if (!rooms.has(room)) {
     user = {
       id,
       role,
       ip
     }
+
     rooms.set(room, {
       turn: Turn.BLUE,
       phase: Phase.NONE,
-      banns: [],
+      bans: [],
       picks: {},
       users: [user]
     })
+
   } else {
-    const newRole = checkRoles(rooms.get(room), role) && !(await findUserWithIP(ip)) ? UserRole.SPECTATOR : role
+    const newRole = await getUserRole(rooms.get(room), role, ip)
     user = {
       id,
       role: newRole,
@@ -46,17 +49,22 @@ export function switchPhase (roomId: string, socket : Socket) {
   const room = rooms.get(roomId)
   const bestOf = 3
   const maps = 7
-  let sidePicks = 0
 
   if (room.phase === Phase.SIDE) {
-    sidePicks++
-    if (sidePicks >= bestOf) {
+    const allSidesPicked = Object.values(room.picks).every((p) => {
+      return p.attacker !== undefined && p.defender !== undefined
+    })
+
+    if (allSidesPicked) {
       rooms.get(roomId).phase = Phase.DONE
     }
+
   } else if (room.phase === Phase.PICK && Object.keys(room.picks).length >= bestOf) {
     rooms.get(roomId).phase = Phase.SIDE
-  } else if (room.phase === Phase.BAN && room.banns.length >= maps - (bestOf + 1)) {
+
+  } else if (room.phase === Phase.BAN && room.bans.length >= maps - (bestOf + 1)) {
     rooms.get(roomId).phase = Phase.PICK
+
   } else if (room.phase === Phase.NONE) {
     const blue = room.users.find(u => u.role === UserRole.BLUE)
     const red = room.users.find(u => u.role === UserRole.RED)
@@ -71,8 +79,11 @@ export function switchPhase (roomId: string, socket : Socket) {
     .emit('phase', rooms.get(roomId).phase)
 }
 
-function checkRoles (room : Room, role : UserRole) {
-  return room.users.find(u => u.role === role && role !== UserRole.SPECTATOR)
+async function getUserRole (room : Room, role : UserRole, ip : string) {
+  if (role === UserRole.SPECTATOR) return UserRole.SPECTATOR
+
+  const user = room.users.find(u => u.role === role && u.ip !== ip)
+  return user === undefined ? role : UserRole.SPECTATOR
 }
 
 export function deleteUser (id: string) {
@@ -86,14 +97,4 @@ export function deleteUser (id: string) {
       }, 3 * 60 * 1000)
     }
   }
-}
-
-export async function findUserWithIP (ip: string) {
-  let user : User;
-
-  for await (const room of rooms.values()) {
-    user = room.users.find(u => u.ip === ip)
-  }
-
-  return user !== undefined
 }

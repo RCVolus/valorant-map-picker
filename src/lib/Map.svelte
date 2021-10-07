@@ -1,6 +1,10 @@
 <script lang="ts">
-	import { Phase } from '../../types/enums';
-	import { selectedMap, banns, picks, phase } from '../store';
+import { Phase } from '../../types/enums';
+
+	import { MapStore, phase } from '../store';
+	import SideSelction from './SideSelction.svelte';
+
+	const { selectedMap, bans, picks } = MapStore;
 
 	export let src: string;
 	export let name: string;
@@ -15,7 +19,7 @@
 
 	let isBanned = false;
 	$: {
-		isBanned = $banns.includes(uuid);
+		isBanned = $bans.includes(uuid);
 	}
 
 	let isPicked = false;
@@ -25,15 +29,12 @@
 
 	let isDisabled = false || disableOverwrite;
 	$: {
-		isDisabled = $banns.includes(uuid) || Object.keys($picks).includes(uuid) || disableOverwrite;
-	}
-
-	let isHidden = false;
-	$: {
-		isHidden = ($banns.includes(uuid) || !Object.keys($picks).includes(uuid)) && $phase === Phase.SIDE;
+		isDisabled = $bans.includes(uuid) || Object.keys($picks).includes(uuid) || $phase === Phase.SIDE || disableOverwrite;
 	}
 
 	function selectMap() {
+		if (isDisabled) return
+
 		if ($selectedMap === uuid) {
 			selectedMap.set(undefined);
 		} else {
@@ -48,9 +49,9 @@
 	class:selected={isSelectedMap}
 	class:banned={isBanned}
 	class:picked={isPicked}
-	class:hiiden={isHidden}
 	on:click={selectMap}
 >
+	<SideSelction {uuid} />
 	<div class="text">
 		<p>{isBanned ? 'Banned' : isPicked ? `Round ${Object.keys($picks).indexOf(uuid) + 1}` : ''}</p>
 		<h3>{name}</h3>
@@ -61,7 +62,16 @@
 </div>
 
 <style lang="scss">
+	@keyframes show {
+		from {
+			transform: scaleX(0);
+		} to {
+			transform: scaleX(1);
+		}
+	}
+
 	.map {
+		box-sizing: border-box;
 		display: block;
 		pointer-events: all;
 		cursor: pointer;
@@ -72,13 +82,22 @@
 		position: relative;
 		--border-width: 1px;
 		z-index: 1;
+		transform-origin: left center;
+		transform: scaleX(0);
+		animation: show 0.3s ease forwards;
+		padding: 25px;
+		display: flex;
+		flex-direction: column;
+
+		$elements: 15;
+		@for $i from 0 to $elements {
+			&:nth-child(#{$i + 1}) {
+				animation-delay: $i * 0.25s;
+			}
+		}
 
 		&.disabled {
 			pointer-events: none;
-		}
-
-		&.hiiden {
-			display: none;
 		}
 
 		&::before,
@@ -105,7 +124,7 @@
 			border-width: 0 var(--border-width) var(--border-width);
 		}
 
-		&:hover {
+		&:not(.disabled):hover {
 			&::before,
 			&::after {
 				transform: scaleY(1);
@@ -115,9 +134,12 @@
 
 	.img-conatiner {
 		overflow: hidden;
-		position: relative;
+		position: absolute;
 		height: 100%;
 		width: 100%;
+		top: 0;
+		left: 0;
+		z-index: -1;
 
 		img {
 			position: absolute;
@@ -150,11 +172,9 @@
 	}
 
 	.text {
-		position: absolute;
+		margin-top: auto;
 		text-align: center;
 		width: 100%;
-		left: 0;
-		bottom: 25px;
 		z-index: 10;
 	}
 

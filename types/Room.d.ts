@@ -4,7 +4,7 @@ import type { Turn, Phase } from './enums'
 export interface Room {
   turn : Turn
   phase : Phase
-  banns : string[]
+  bans : string[]
   picks : {
     [mapId: string] : Side
   }
