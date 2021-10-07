@@ -1,6 +1,6 @@
 export const enum Turn {
-  RED = 100,
-  BLUE = 200
+  BLUE = 100,
+  RED = 200
 }
 
 export const enum Phase {

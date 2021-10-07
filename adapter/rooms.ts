@@ -14,7 +14,7 @@ export default async function joinRoom (id : string, ip: string, role : UserRole
       ip
     }
     rooms.set(room, {
-      turn: Turn.RED,
+      turn: Turn.BLUE,
       phase: Phase.NONE,
       banns: [],
       picks: {},

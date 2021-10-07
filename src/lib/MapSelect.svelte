@@ -32,7 +32,7 @@
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: space-between;
-		gap: 1rem;
+		gap: 20px;
 		flex-grow: 1;
 		margin: 3rem 0;
 	}

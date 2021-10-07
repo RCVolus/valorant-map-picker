@@ -66,14 +66,12 @@
 		pointer-events: all;
 		cursor: pointer;
 		min-width: 150px;
-		/* max-width: 200px; */
 		flex-grow: 1;
 		height: auto;
 		background: rgb(118, 128, 121);
 		position: relative;
-		--border-width: 3px;
+		--border-width: 1px;
 		z-index: 1;
-		overflow: hidden;
 
 		&.disabled {
 			pointer-events: none;
