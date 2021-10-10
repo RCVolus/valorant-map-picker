@@ -69,7 +69,7 @@
 
 <Header>
 	{#if $phase === Phase.NONE}
-		Pleas Wait
+		Please Wait
 	{:else if $phase === Phase.DONE}
 		Complete
 	{:else if $phase === Phase.SIDE}
