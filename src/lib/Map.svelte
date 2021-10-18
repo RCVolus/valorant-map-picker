@@ -1,5 +1,5 @@
 <script lang="ts">
-import { Phase } from '../../types/enums';
+	import { Phase } from '../../types/enums';
 
 	import { MapStore, phase } from '../store';
 	import SideSelction from './SideSelction.svelte';
@@ -29,11 +29,15 @@ import { Phase } from '../../types/enums';
 
 	let isDisabled = false || disableOverwrite;
 	$: {
-		isDisabled = $bans.includes(uuid) || Object.keys($picks).includes(uuid) || $phase === Phase.SIDE || disableOverwrite;
+		isDisabled =
+			$bans.includes(uuid) ||
+			Object.keys($picks).includes(uuid) ||
+			$phase === Phase.SIDE ||
+			disableOverwrite;
 	}
 
 	function selectMap() {
-		if (isDisabled) return
+		if (isDisabled) return;
 
 		if ($selectedMap === uuid) {
 			selectedMap.set(undefined);
@@ -65,7 +69,8 @@ import { Phase } from '../../types/enums';
 	@keyframes show {
 		from {
 			transform: scaleX(0);
-		} to {
+		}
+		to {
 			transform: scaleX(1);
 		}
 	}

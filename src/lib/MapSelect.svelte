@@ -1,7 +1,7 @@
 <script>
 	import { MapStore } from '../store';
 	import Map from './Map.svelte';
-	const {maps, loading, error} = MapStore
+	const { maps, loading, error } = MapStore;
 
 	export let disableAll = false;
 </script>

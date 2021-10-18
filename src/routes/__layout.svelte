@@ -7,7 +7,7 @@
 		<p>//////////</p>
 	</div>
 	<div class="stripes right">
-		<img src="/img/V_Bug_Positive_Navy.png" alt="valorant icon" width="25">
+		<img src="/img/V_Bug_Positive_Navy.png" alt="valorant icon" width="25" />
 		<p>/////</p>
 	</div>
 
@@ -54,7 +54,7 @@
 		font-size: 25px;
 		font-weight: bold;
 		letter-spacing: 5px;
-		color: #0F1923;
+		color: #0f1923;
 		opacity: 0.7;
 		z-index: 20;
 		transform-origin: center;
@@ -67,7 +67,7 @@
 		&.left {
 			bottom: 75px;
 			left: -53px;
-			
+
 			p {
 				transform: rotate(90deg);
 			}
@@ -76,7 +76,7 @@
 		&.right {
 			top: 15px;
 			right: -13.5px;
-			
+
 			p {
 				transform: rotate(-90deg);
 			}

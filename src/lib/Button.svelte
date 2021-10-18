@@ -1,9 +1,9 @@
 <script lang="ts">
-	export let disabled : boolean = false
+	export let disabled: boolean = false;
 </script>
 
 <div class="btn">
-	<button {disabled} title="Select a map First" on:click><slot></slot></button>
+	<button {disabled} title="Select a map First" on:click><slot /></button>
 </div>
 
 <style>

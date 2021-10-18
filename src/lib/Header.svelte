@@ -12,7 +12,7 @@
 		<h3 class="timer">{('0' + leftTimer).slice(-2)}</h3>
 		<Line />
 	</div>
-	<h1><slot></slot></h1>
+	<h1><slot /></h1>
 	<div class="timer-wrapper" class:hide={rightTimer <= 0}>
 		<Line />
 		<h3 class="timer">{('0' + rightTimer).slice(-2)}</h3>

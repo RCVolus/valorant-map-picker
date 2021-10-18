@@ -1,7 +1,7 @@
-import type { UserRole } from './enums'
+import type { UserRole } from './enums';
 
 export interface User {
-  id: string
-  role: UserRole,
-  ip: string
+	id: string;
+	role: UserRole;
+	ip: string;
 }

@@ -1,5 +1,5 @@
-import sveltePreprocess from 'svelte-preprocess'
-import expressAdapter from "@sveltejs/adapter-node"
+import sveltePreprocess from 'svelte-preprocess';
+import expressAdapter from '@sveltejs/adapter-node';
 
 export default {
 	preprocess: [
@@ -9,7 +9,7 @@ export default {
 				renderSync: true,
 				outputStyle: 'expanded'
 			}
-		}),
+		})
 	],
 	kit: {
 		adapter: expressAdapter({
@@ -19,7 +19,7 @@ export default {
 			env: {
 				host: 'HOST',
 				port: 'PORT'
-			}			
+			}
 		})
 	}
-}
+};
