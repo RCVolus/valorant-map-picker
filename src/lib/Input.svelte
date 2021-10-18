@@ -4,17 +4,23 @@
 	export let disabled: boolean = false;
 	export let readonly: boolean = false;
 
-	function onClick () {
+	let isCopied: boolean = false;
+
+	function clickToCopy () {
 		navigator.clipboard.writeText(value).then(function() {
-			
+			isCopied = true
+			setTimeout(() => {
+				isCopied = false
+			}, 1500)
 		}, function() {
 			console.log('copping failed')
 		});
 	}
 </script>
 
-<div class="input">
-	<input type="text" {value} {disabled} {readonly} {placeholder} on:click={onClick} />
+<div class="input" on:click={clickToCopy}>
+	<span class="copied" class:isCopied></span>
+	<input type="text" {value} {disabled} {readonly} {placeholder} />
 </div>
 
 <style lang="scss">
@@ -56,20 +62,38 @@
 		border: none;
 		text-align: center;
 		font-size: 17px;
-		position: relative;
 	}
 
-	input::before {
-		content: '';
-		background-color: rgb(255, 70, 85);
+	.copied {
+		pointer-events: none;
+		width: calc(100% + 10px);
+		height: calc(100% + 10px);
+		position: absolute;
+		top: -5px;
+		left: -5px;
+		z-index: 5;
+		overflow: hidden;
+	}
+
+	.copied::before {
+		content: 'copied';
+		position: absolute;
+		top: 0;
+		left: -50%;
 		width: 115%;
 		height: 100%;
-		position: absolute;
-		bottom: 0;
-		left: 50%;
-		/* transform: translateX(-145%); */
-		z-index: -1;
+		background-color: #67c2aa;
+		display: flex;
+		text-align: center;
+		justify-content: center;
+		align-items: center;
+		font-weight: bold;
 		clip-path: polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%);
+		transform: translateX(145%);
 		transition: transform 0.3s ease;
+	}
+
+	.copied.isCopied::before {
+		transform: translateX(35%);
 	}
 </style>
