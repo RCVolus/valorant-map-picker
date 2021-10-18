@@ -23,10 +23,10 @@
 </script>
 
 <div style="margin: auto 0;" />
-<h1>Your Room Links</h1>
+<h1>Room Links</h1>
 <p>
-	Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
-	labore et dolore magna aliquyam erat, sed diam voluptua.
+	You can use these links to join the rooms yourself <br>
+	or to send them to other people so they can use this room as well
 </p>
 
 <h4>Spectator</h4>
