@@ -5,7 +5,7 @@
 	import { browser } from '$app/env';
 	import MapSelect from '$lib/MapSelect.svelte';
 	import Button from '$lib/Button.svelte';
-	import { MapStore, phase, selectedSide, turn } from '../../store';
+	import { isSpectator, MapStore, phase, selectedSide, turn } from '../../store';
 	import type { Room, Side } from '../../../types/Room';
 	import type { User } from '../../../types/User';
 	import { goto } from '$app/navigation';
@@ -14,6 +14,8 @@
 	const { selectedMap, bans, picks } = MapStore;
 
 	const team = Number($page.params.team);
+
+	isSpectator.set(false)
 
 	let action: () => void;
 
@@ -35,10 +37,10 @@
 			picks.set(newPicks);
 		});
 		socket.on('turn', (newTurn: Turn) => {
+			console.log(newTurn);
 			turn.set(newTurn);
 		});
 		socket.on('phase', (newPhase: Phase) => {
-			console.log(newPhase);
 			phase.set(newPhase);
 		});
 

@@ -4,11 +4,13 @@
 	import { io } from 'socket.io-client';
 	import { page } from '$app/stores';
 	import { browser } from '$app/env';
-	import { MapStore, phase, turn } from '../../store';
+	import { isSpectator, MapStore, phase, turn } from '../../store';
 	import type { Room, Side } from '../../../types/Room';
 	import { Phase, Turn, UserRole } from '../../../types/enums';
 
 	const { bans, picks } = MapStore;
+
+	isSpectator.set(true)
 
 	if (browser) {
 		const socket = io();

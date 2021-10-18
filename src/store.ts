@@ -5,6 +5,7 @@ import { Phase, Turn } from '../types/enums';
 export const phase = writable<Phase>(Phase.NONE);
 export const turn = writable<Turn>(Turn.BLUE);
 export const selectedSide = writable<[string, 'attacker' | 'defender']>();
+export const isSpectator = writable(false)
 
 class Maps {
 	public loading = writable(false);

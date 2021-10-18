@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Phase } from '../../types/enums';
-	import { phase, selectedSide, turn } from '../store';
+	import { isSpectator, phase, selectedSide, turn } from '../store';
 	import { page } from '$app/stores';
 	import { MapStore } from '../store';
 
@@ -11,11 +11,27 @@
 
 	export let uuid: string;
 
-	let isDisabled = false;
+	let isDisabled = false || $isSpectator;
 	let hidden = false;
 
 	$: {
 		hidden = $phase !== Phase.SIDE && $phase !== Phase.DONE;
+	}
+
+	$: {
+		if ($phase === Phase.SIDE) {
+			let index = Object.keys($picks).indexOf(uuid)
+			let previousIndex : number = index > 0 ? index - 1 : null
+			
+			if (previousIndex !== null) {
+				let previousPick = Object.values($picks)[previousIndex]
+				if (!previousPick.attacker || !previousPick.defender) {
+					hidden = true
+				} else {
+					hidden = false
+				}
+			}
+		}
 	}
 
 	let attacker: 100 | 200;

@@ -80,8 +80,7 @@
 		display: block;
 		pointer-events: all;
 		cursor: pointer;
-		min-width: 150px;
-		flex-grow: 1;
+		flex: 1;
 		height: auto;
 		background: rgb(118, 128, 121);
 		position: relative;
