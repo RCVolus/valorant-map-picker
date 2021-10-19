@@ -25,7 +25,7 @@
 <div style="margin: auto 0;" />
 <h1>Room Links</h1>
 <p>
-	You can use these links to join the rooms yourself <br>
+	You can use these links to join the rooms yourself <br />
 	or to send them to other people so they can use this room as well
 </p>
 

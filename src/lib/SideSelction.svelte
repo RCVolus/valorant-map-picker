@@ -20,15 +20,15 @@
 
 	$: {
 		if ($phase === Phase.SIDE) {
-			let index = Object.keys($picks).indexOf(uuid)
-			let previousIndex : number = index > 0 ? index - 1 : null
-			
+			let index = Object.keys($picks).indexOf(uuid);
+			let previousIndex: number = index > 0 ? index - 1 : null;
+
 			if (previousIndex !== null) {
-				let previousPick = Object.values($picks)[previousIndex]
+				let previousPick = Object.values($picks)[previousIndex];
 				if (!previousPick.attacker || !previousPick.defender) {
-					hidden = true
+					hidden = true;
 				} else {
-					hidden = false
+					hidden = false;
 				}
 			}
 		}

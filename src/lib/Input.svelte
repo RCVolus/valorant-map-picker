@@ -6,20 +6,23 @@
 
 	let isCopied: boolean = false;
 
-	function clickToCopy () {
-		navigator.clipboard.writeText(value).then(function() {
-			isCopied = true
-			setTimeout(() => {
-				isCopied = false
-			}, 1500)
-		}, function() {
-			console.log('copping failed')
-		});
+	function clickToCopy() {
+		navigator.clipboard.writeText(value).then(
+			function () {
+				isCopied = true;
+				setTimeout(() => {
+					isCopied = false;
+				}, 1500);
+			},
+			function () {
+				console.log('copping failed');
+			}
+		);
 	}
 </script>
 
 <div class="input" on:click={clickToCopy}>
-	<span class="copied" class:isCopied></span>
+	<span class="copied" class:isCopied />
 	<input type="text" {value} {disabled} {readonly} {placeholder} />
 </div>
 

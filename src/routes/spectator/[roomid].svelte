@@ -10,7 +10,7 @@
 
 	const { bans, picks } = MapStore;
 
-	isSpectator.set(true)
+	isSpectator.set(true);
 
 	if (browser) {
 		const socket = io();

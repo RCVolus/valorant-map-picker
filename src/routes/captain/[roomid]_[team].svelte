@@ -15,7 +15,7 @@
 
 	const team = Number($page.params.team);
 
-	isSpectator.set(false)
+	isSpectator.set(false);
 
 	let action: () => void;
 
