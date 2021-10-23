@@ -8,6 +8,7 @@ import { UserRole } from '../types/enums';
 
 const app = express();
 const port = process.env.PORT || 5000;
+const host = process.env.HOST || '127.0.0.1'
 
 const server = http.createServer(app);
 const io = new Server(server, {
@@ -76,6 +77,6 @@ io.on('connection', (socket) => {
 
 app.use(compression({ threshold: 0 }), assetsMiddleware, kitMiddleware, prerenderedMiddleware);
 
-server.listen(port, () => {
-	console.log(`Listening for requests on http://localhost:${port}`);
+server.listen(port, host, () => {
+	console.log(`Listening for requests on http://${host}:${port}`);
 });
