@@ -28,8 +28,7 @@
 		overflow: hidden;
 		display: flex;
 		flex-direction: column;
-		z-index: -1;
-
+		z-index: 0;
 		&::before,
 		&::after {
 			content: '';
