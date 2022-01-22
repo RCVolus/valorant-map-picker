@@ -3,24 +3,11 @@
 </script>
 
 <main>
-	<div class="stripes left">
-		<p>//////////</p>
-	</div>
-	<div class="stripes right">
-		<img src="/img/V_Bug_Positive_Navy.png" alt="valorant icon" width="25" />
-		<p>/////</p>
-	</div>
-
 	<slot />
-
-	<Footer />
-
-	<div class="bg-text">Map Select</div>
 </main>
 
 <style lang="scss">
 	main {
-		background-color: rgb(236, 232, 225);
 		padding: 25px 125px;
 		position: relative;
 		width: 100%;
@@ -28,27 +15,6 @@
 		overflow: hidden;
 		display: flex;
 		flex-direction: column;
-		z-index: -1;
-
-		&::before,
-		&::after {
-			content: '';
-			background-color: rgb(255, 70, 85);
-			width: 50px;
-			height: 100%;
-			position: absolute;
-			top: 0;
-		}
-
-		&::before {
-			left: 0;
-			clip-path: polygon(0% 0%, 0% 100%, 100% 100%, 100% 80%, 80% 75%, 80% 0);
-		}
-
-		&::after {
-			right: 0;
-			clip-path: polygon(100% 0%, 100% 100%, 20% 100%, 20% 20%, 0% 15%, 0% 0);
-		}
 	}
 
 	.stripes {
