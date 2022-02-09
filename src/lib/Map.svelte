@@ -55,7 +55,9 @@
 	class:picked={isPicked}
 	on:click={selectMap}
 >
-	<SideSelction {uuid} />
+	{#if isPicked}
+		<SideSelction {uuid} />
+	{/if}
 	<div class="text">
 		<p>{isBanned ? 'Banned' : isPicked ? `Round ${Object.keys($picks).indexOf(uuid) + 1}` : ''}</p>
 		<h3>{name}</h3>

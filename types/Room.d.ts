@@ -2,6 +2,8 @@ import type { User } from './User';
 import type { Turn, Phase } from './enums';
 
 export interface Room {
+	step: number,
+	bestOf: 3 | 5
 	turn: Turn;
 	phase: Phase;
 	bans: string[];

@@ -12,24 +12,17 @@
 	export let uuid: string;
 
 	let isDisabled = false || $isSpectator;
-	let hidden = false;
 
 	$: {
-		hidden = $phase !== Phase.SIDE && $phase !== Phase.DONE;
-	}
+		if ($phase !== Phase.SIDE) {
+			isDisabled = true
+		} else {
+			let lastPick = Object.keys($picks)[Object.keys($picks).length - 1];
 
-	$: {
-		if ($phase === Phase.SIDE) {
-			let index = Object.keys($picks).indexOf(uuid);
-			let previousIndex: number = index > 0 ? index - 1 : null;
-
-			if (previousIndex !== null) {
-				let previousPick = Object.values($picks)[previousIndex];
-				if (!previousPick.attacker || !previousPick.defender) {
-					hidden = true;
-				} else {
-					hidden = false;
-				}
+			if (lastPick === uuid) {
+				isDisabled = false
+			} else {
+				isDisabled = true
 			}
 		}
 	}
@@ -73,7 +66,7 @@
 	}
 </script>
 
-<div class="sides" class:hidden class:disabled={isDisabled || $turn !== team}>
+<div class="sides" class:disabled={isDisabled || $turn !== team}>
 	<div
 		class="side attacker"
 		class:blue={attacker === team}
@@ -122,10 +115,6 @@
 
 		&.disabled {
 			pointer-events: none !important;
-		}
-
-		&.hidden {
-			display: none;
 		}
 	}
 

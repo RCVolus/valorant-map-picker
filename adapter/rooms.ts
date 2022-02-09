@@ -5,7 +5,7 @@ import { Phase, UserRole, Turn } from '../types/enums';
 
 export const rooms: Map<string, Room> = new Map();
 
-export default async function joinRoom(id: string, ip: string, role: UserRole, room: string) {
+export default async function joinRoom(id: string, ip: string, role: UserRole, room: string): Promise<User> {
 	let user: User;
 
 	if (!rooms.has(room)) {
@@ -16,8 +16,10 @@ export default async function joinRoom(id: string, ip: string, role: UserRole, r
 		};
 
 		rooms.set(room, {
+			step: 0,
 			turn: Turn.BLUE,
 			phase: Phase.NONE,
+			bestOf: 3,
 			bans: [],
 			picks: {},
 			users: [user]
@@ -36,37 +38,104 @@ export default async function joinRoom(id: string, ip: string, role: UserRole, r
 	return user;
 }
 
-export function switchTurn(roomId: string, socket: Socket) {
-	rooms.get(roomId).turn = rooms.get(roomId).turn === Turn.RED ? Turn.BLUE : Turn.RED;
+export function switchTurn(roomId: string, socket: Socket): void {
+	const room = rooms.get(roomId);
+	const step = room.step
+
+	let turn : Turn
+
+	switch (step) {
+		case 0:
+			turn = Turn.RED
+			break
+		case 1:
+			turn = Turn.BLUE
+			break
+		case 2:
+			turn = Turn.RED
+			break
+		case 3:
+			turn = Turn.RED
+			break
+		case 4:
+			turn = Turn.BLUE
+			break
+		case 5:
+			turn = Turn.BLUE
+			break
+		case 6:
+			turn = Turn.RED
+			break
+		case 7:
+			turn = Turn.BLUE
+			break
+		case 8:
+			turn = Turn.BLUE
+			break
+		default:
+			turn = Turn.BLUE
+	}
+
+	rooms.get(roomId).turn = turn;
+	rooms.get(roomId).step += 1;
 
 	socket.nsp.to(roomId).emit('turn', rooms.get(roomId).turn);
 }
 
-export function switchPhase(roomId: string, socket: Socket) {
+export function switchPhase(roomId: string, socket: Socket): void {
 	const room = rooms.get(roomId);
-	const bestOf = 3;
-	const maps = 7;
+	const step = room.step
 
-	if (room.phase === Phase.SIDE) {
-		const allSidesPicked = Object.values(room.picks).every((p) => {
-			return p.attacker !== undefined && p.defender !== undefined;
-		});
-
-		if (allSidesPicked) {
-			rooms.get(roomId).phase = Phase.DONE;
-		}
-	} else if (room.phase === Phase.PICK && Object.keys(room.picks).length >= bestOf) {
-		rooms.get(roomId).phase = Phase.SIDE;
-	} else if (room.phase === Phase.BAN && room.bans.length >= maps - (bestOf + 1)) {
-		rooms.get(roomId).phase = Phase.PICK;
-	} else if (room.phase === Phase.NONE) {
+	if (room.phase === Phase.NONE) {
 		const blue = room.users.find((u) => u.role === UserRole.BLUE);
 		const red = room.users.find((u) => u.role === UserRole.RED);
 
-		if (blue !== undefined && red !== undefined) {
-			rooms.get(roomId).phase = Phase.BAN;
+		if (blue === undefined || red === undefined) {
+			return
 		}
 	}
+
+	let phase : Phase
+
+	switch (step) {
+		case 0:
+			phase = Phase.BAN
+			break
+		case 1:
+			phase = Phase.BAN
+			break
+		case 2:
+			phase = Phase.PICK
+			break
+		case 3:
+			phase = Phase.SIDE
+			break
+		case 4:
+			phase = Phase.PICK
+			break
+		case 5:
+			phase = Phase.SIDE
+			break
+		case 6:
+			phase = Phase.BAN
+			break
+		case 7:
+			phase = Phase.BAN
+			break
+		case 8:
+			phase = Phase.PICK
+			break
+		case 9:
+			phase = Phase.SIDE
+			break
+		case 10:
+			phase = Phase.DONE
+			break
+		default:
+			phase = Phase.NONE
+	}
+
+	rooms.get(roomId).phase = phase
 
 	socket.nsp.to(roomId).emit('phase', rooms.get(roomId).phase);
 }
@@ -78,7 +147,7 @@ async function getUserRole(room: Room, role: UserRole, ip: string) {
 	return user === undefined ? role : UserRole.SPECTATOR;
 }
 
-export function deleteUser(id: string) {
+export function deleteUser(id: string): void {
 	for (const [roomId, room] of rooms) {
 		const index = room.users.findIndex((u) => u.id === id);
 		room.users.slice(index, 1);

@@ -21,22 +21,9 @@ class Maps {
 
 	get maps() {
 		return derived(
-			[this.availableMaps, this.picks, this.bans, phase],
-			([$availableMaps, $picks, $bans, $phase]) => {
-				if ($phase === Phase.SIDE || $phase === Phase.DONE) {
-					let n = [];
-
-					for (const pick of Object.keys($picks)) {
-						const map = $availableMaps.find((m) => m.uuid === pick);
-						n.push(map);
-					}
-
-					return n;
-				} else if ($phase === Phase.PICK) {
-					return $availableMaps.filter((m) => !$bans.includes(m.uuid));
-				} else {
-					return $availableMaps;
-				}
+			[this.availableMaps],
+			([$availableMaps]) => {
+				return $availableMaps
 			}
 		);
 	}
