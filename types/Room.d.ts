@@ -6,6 +6,8 @@ export interface Room {
 	bestOf: 3 | 5
 	turn: Turn;
 	phase: Phase;
+	blueTeam: string
+	redTeam: string
 	bans: string[];
 	picks: {
 		[mapId: string]: Side;

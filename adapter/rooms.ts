@@ -9,21 +9,7 @@ export default async function joinRoom(id: string, ip: string, role: UserRole, r
 	let user: User;
 
 	if (!rooms.has(room)) {
-		user = {
-			id,
-			role,
-			ip
-		};
-
-		rooms.set(room, {
-			step: 0,
-			turn: Turn.BLUE,
-			phase: Phase.NONE,
-			bestOf: 3,
-			bans: [],
-			picks: {},
-			users: [user]
-		});
+		throw new Error('Room could not be found')
 	} else {
 		const newRole = await getUserRole(rooms.get(room), role, ip);
 		user = {
@@ -36,6 +22,32 @@ export default async function joinRoom(id: string, ip: string, role: UserRole, r
 	}
 
 	return user;
+}
+
+export function createRoom (bestOf : 3 | 5 = 3, blueTeam = 'Blue', redTeam = 'Red') : string {
+	const code = uuidv4();
+
+	rooms.set(code, {
+		step: 0,
+		turn: Turn.BLUE,
+		phase: Phase.NONE,
+		blueTeam,
+		redTeam,
+		bestOf,
+		bans: [],
+		picks: {},
+		users: []
+	});
+
+	return code
+}
+
+function uuidv4() {
+	return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+		const r = (Math.random() * 16) | 0,
+			v = c == 'x' ? r : (r & 0x3) | 0x8;
+		return v.toString(16);
+	});
 }
 
 export function switchTurn(roomId: string, socket: Socket): void {

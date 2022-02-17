@@ -3,6 +3,7 @@
 	export let placeholder: string = '';
 	export let disabled: boolean = false;
 	export let readonly: boolean = false;
+	export let clickCopy: boolean = false
 
 	let isCopied: boolean = false;
 
@@ -21,10 +22,17 @@
 	}
 </script>
 
-<div class="input" on:click={clickToCopy}>
-	<span class="copied" class:isCopied />
-	<input type="text" {value} {disabled} {readonly} {placeholder} />
-</div>
+{#if clickCopy}
+	<div class="input" on:click={clickToCopy}>
+		<span class="copied" class:isCopied />
+		<input type="text" bind:value {disabled} {readonly} {placeholder} />
+	</div>
+{:else}
+	<div class="input">
+		<span class="copied"/>
+		<input type="text" bind:value {disabled} {readonly} {placeholder} />
+	</div>
+{/if}
 
 <style lang="scss">
 	.input {

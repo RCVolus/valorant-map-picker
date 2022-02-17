@@ -3,7 +3,7 @@ import compression from 'compression';
 import express from 'express';
 import * as http from 'http';
 import { Server } from 'socket.io';
-import joinRoom, { deleteUser, rooms, switchPhase, switchTurn } from './rooms.js';
+import joinRoom, { createRoom, deleteUser, rooms, switchPhase, switchTurn } from './rooms.js';
 import { UserRole } from '../types/enums';
 
 const app = express();
@@ -15,6 +15,8 @@ const io = new Server(server, {
 	pingInterval: 1000,
 	pingTimeout: 2000
 });
+
+app.use(express.json())
 
 io.on('connection', (socket) => {
 	socket.on('joinRoom', async ({ role, room }) => {
@@ -74,6 +76,18 @@ io.on('connection', (socket) => {
 		deleteUser(socket.id);
 	});
 });
+
+app.post('/api/create', (req, res) => {
+	const { bestOf, blueTeam, redTeam } = req.body
+
+	if (!bestOf || !blueTeam || !redTeam) {
+		return res.status(401)
+	}
+
+	const code = createRoom(bestOf, blueTeam, redTeam)
+
+	res.send({code})
+})
 
 app.use(compression({ threshold: 0 }), assetsMiddleware, kitMiddleware, prerenderedMiddleware);
 

@@ -5,7 +5,7 @@
 	import { browser } from '$app/env';
 	import MapSelect from '$lib/MapSelect.svelte';
 	import Button from '$lib/Button.svelte';
-	import { isSpectator, MapStore, phase, selectedSide, turn } from '../../store';
+	import { isSpectator, MapStore, phase, selectedSide, teams, turn } from '../../store';
 	import type { Room, Side } from '../../../types/Room';
 	import type { User } from '../../../types/User';
 	import { goto } from '$app/navigation';
@@ -49,6 +49,8 @@
 			turn.set(room.turn);
 			bans.set(room.bans);
 			picks.set(room.picks);
+			console.log([room.blueTeam, room.redTeam])
+			teams.set([room.blueTeam, room.redTeam])
 		});
 
 		socket.on('user', (user: User) => {
@@ -76,14 +78,14 @@
 		Complete
 	{:else if $phase === Phase.SIDE}
 		{#if $turn !== team}
-			Opponent is picking a Side
+			{team === 100 ? $teams[1] : $teams[0]} is picking a Side
 		{:else}
 			pick a Side
 		{/if}
 	{:else if $turn !== team}
-		{`Opponent is ${$phase}ing a Map`}
+		{team === 100 ? $teams[1] : $teams[0]} is {$phase}ing a Map
 	{:else}
-		{`${$phase} a Map`}
+		{$phase} a Map
 	{/if}
 </Header>
 

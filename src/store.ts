@@ -7,6 +7,8 @@ export const turn = writable<Turn>(Turn.BLUE);
 export const selectedSide = writable<[string, 'attacker' | 'defender']>();
 export const isSpectator = writable(false);
 
+export const teams = writable<[string, string]>(['Blue', 'Red'])
+
 class Maps {
 	public loading = writable(false);
 	public error = writable(undefined);

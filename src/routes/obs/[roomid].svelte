@@ -4,7 +4,7 @@
 	import { io } from 'socket.io-client';
 	import { page } from '$app/stores';
 	import { browser } from '$app/env';
-	import { isSpectator, MapStore, phase, turn } from '../../store';
+	import { isSpectator, MapStore, phase, teams, turn } from '../../store';
 	import type { Room, Side } from '../../../types/Room';
 	import { Phase, Turn, UserRole } from '../../../types/enums';
 
@@ -40,8 +40,21 @@
 			turn.set(room.turn);
 			bans.set(room.bans);
 			picks.set(room.picks);
+			teams.set([room.blueTeam, room.redTeam])
 		});
 	}
 </script>
+
+<Header>
+	{#if $phase === Phase.NONE}
+		Please Wait
+	{:else if $phase === Phase.DONE}
+		Complete
+	{:else if $phase === Phase.SIDE}
+		{$turn === 100 ? $teams[0] : $teams[1]} is picking a Side
+	{:else}
+		{$turn === 100 ? $teams[0] : $teams[1]} is {$phase}ing a Map
+	{/if}
+</Header>
 
 <MapSelect disableAll />
