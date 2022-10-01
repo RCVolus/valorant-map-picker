@@ -37,9 +37,7 @@ class Maps {
 		try {
 			const mapResponse = await fetch('https://valorant-api.com/v1/maps');
 			const maps = await mapResponse.json();
-			this.availableMaps.set(maps.data.filter(m => {
-				m.displayName !== 'Split'
-			}));
+			this.availableMaps.set(maps.data);
 		} catch (e) {
 			this.error.set(e);
 		} finally {

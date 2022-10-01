@@ -16,7 +16,7 @@
 		</div>
 	{:else}
 		{#each $maps as map}
-			{#if map.uuid !== 'ee613ee9-28b7-4beb-9666-08db13bb2244'}
+			{#if map.uuid !== 'ee613ee9-28b7-4beb-9666-08db13bb2244' && map.uuid !== 'd960549e-485c-e861-8d71-aa9d1aed12a2'}
 				<Map uuid={map.uuid} name={map.displayName} src={map.splash} disabled={disableAll} />
 			{/if}
 		{/each}
